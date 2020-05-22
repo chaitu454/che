@@ -9,11 +9,8 @@
  * Contributors:
  *   Red Hat, Inc. - initial API and implementation
  */
-package org.eclipse.che.api.core.model.workspace.devfile;
+package org.eclipse.che.api.devfile.server.model.impl;
 
-/** Devfile that persisted in permanent storage. */
-public interface PersistedDevfile extends Devfile {
-  /** Returns the identifier of this persisted devfile instance. It is mandatory and unique. */
-  String getId();
+import org.eclipse.che.api.core.model.workspace.devfile.PersistentDevfile;
 
-}
+public class PersistentDevfileImpl implements PersistentDevfile {}
