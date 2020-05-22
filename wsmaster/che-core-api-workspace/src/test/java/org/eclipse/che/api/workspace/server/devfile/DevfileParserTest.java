@@ -61,8 +61,7 @@ public class DevfileParserTest {
   @BeforeMethod
   public void setUp() throws Exception {
     devfile = new DevfileImpl();
-    devfileParser =
-        new DevfileParser(schemaValidator, integrityValidator, yamlMapper, jsonMapper);
+    devfileParser = new DevfileParser(schemaValidator, integrityValidator, yamlMapper, jsonMapper);
 
     lenient().when(jsonMapper.treeToValue(any(), eq(DevfileImpl.class))).thenReturn(devfile);
     lenient().when(yamlMapper.treeToValue(any(), eq(DevfileImpl.class))).thenReturn(devfile);
