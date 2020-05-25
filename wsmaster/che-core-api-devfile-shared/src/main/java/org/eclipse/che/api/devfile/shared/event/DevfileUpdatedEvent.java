@@ -11,19 +11,19 @@
  */
 package org.eclipse.che.api.devfile.shared.event;
 
-import org.eclipse.che.api.core.model.workspace.devfile.PersistentDevfile;
+import org.eclipse.che.api.core.model.workspace.devfile.UserDevfile;
 import org.eclipse.che.api.core.notification.EventOrigin;
 
 /** Informs about persisted devfile update. */
 @EventOrigin("devfile")
 public class DevfileUpdatedEvent {
-  private final PersistentDevfile persistentDevfile;
+  private final UserDevfile userDevfile;
 
-  public DevfileUpdatedEvent(PersistentDevfile persistentDevfile) {
-    this.persistentDevfile = persistentDevfile;
+  public DevfileUpdatedEvent(UserDevfile userDevfile) {
+    this.userDevfile = userDevfile;
   }
 
-  public PersistentDevfile getPersistentDevfile() {
-    return persistentDevfile;
+  public UserDevfile getUserDevfile() {
+    return userDevfile;
   }
 }

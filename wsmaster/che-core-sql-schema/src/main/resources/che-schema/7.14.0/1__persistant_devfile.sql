@@ -11,11 +11,11 @@
 --
 
 
--- add persistentdevfile table
-CREATE TABLE persistentdevfile (
+-- add userdevfile table
+CREATE TABLE userdevfile (
     id          VARCHAR(255)    NOT NULL UNIQUE,
     devfile_id  VARCHAR(255)    NOT NULL UNIQUE,
     PRIMARY KEY (id)
 );
-CREATE INDEX index_persistentdevfile_devfile_id ON persistentdevfile (devfile_id);
-ALTER TABLE persistentdevfile ADD CONSTRAINT fk_persistentdevfile_devfile_id FOREIGN KEY (devfile_id) REFERENCES devfile (id);
+CREATE INDEX index_userdevfile_devfile_id ON userdevfile (devfile_id);
+ALTER TABLE userdevfile ADD CONSTRAINT fk_userdevfile_devfile_id FOREIGN KEY (devfile_id) REFERENCES devfile (id);

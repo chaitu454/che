@@ -13,8 +13,8 @@ package org.eclipse.che.api.devfile.server.jpa;
 
 import com.google.inject.TypeLiteral;
 import org.eclipse.che.account.spi.AccountImpl;
-import org.eclipse.che.api.devfile.server.model.impl.PersistentDevfileImpl;
-import org.eclipse.che.api.devfile.server.spi.DevfileDao;
+import org.eclipse.che.api.devfile.server.model.impl.UserDevfileImpl;
+import org.eclipse.che.api.devfile.server.spi.UserDevfileDao;
 import org.eclipse.che.api.user.server.model.impl.UserImpl;
 import org.eclipse.che.api.workspace.server.devfile.SerializableConverter;
 import org.eclipse.che.api.workspace.server.model.impl.devfile.ActionImpl;
@@ -40,12 +40,8 @@ import org.eclipse.che.core.db.schema.SchemaInitializer;
 import org.eclipse.che.core.db.schema.impl.flyway.FlywaySchemaInitializer;
 import org.h2.Driver;
 
-/**
- * Tck module for factory test.
- *
- * @author Yevhenii Voevodin
- */
-public class DevfileTckModule extends TckModule {
+/** Tck module for UserDevfile test. */
+public class UserDevfileTckModule extends TckModule {
 
   @Override
   protected void configure() {
@@ -57,7 +53,7 @@ public class DevfileTckModule extends TckModule {
             .addEntityClasses(
                 UserImpl.class,
                 AccountImpl.class,
-                PersistentDevfileImpl.class,
+                UserDevfileImpl.class,
                 DevfileImpl.class,
                 ActionImpl.class,
                 CommandImpl.class,
@@ -78,10 +74,10 @@ public class DevfileTckModule extends TckModule {
         .toInstance(new FlywaySchemaInitializer(server.getDataSource(), "che-schema"));
     bind(TckResourcesCleaner.class).toInstance(new H2JpaCleaner(server));
 
-    bind(DevfileDao.class).to(JpaDevfileDao.class);
+    bind(UserDevfileDao.class).to(JpaUserUserDevfileDao.class);
 
-    bind(new TypeLiteral<TckRepository<PersistentDevfileImpl>>() {})
-        .toInstance(new JpaTckRepository<>(PersistentDevfileImpl.class));
+    bind(new TypeLiteral<TckRepository<UserDevfileImpl>>() {})
+        .toInstance(new JpaTckRepository<>(UserDevfileImpl.class));
     bind(new TypeLiteral<TckRepository<UserImpl>>() {})
         .toInstance(new JpaTckRepository<>(UserImpl.class));
   }

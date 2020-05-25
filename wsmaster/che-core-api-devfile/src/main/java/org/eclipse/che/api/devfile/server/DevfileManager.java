@@ -18,7 +18,7 @@ import org.eclipse.che.api.core.NotFoundException;
 import org.eclipse.che.api.core.ServerException;
 import org.eclipse.che.api.core.ValidationException;
 import org.eclipse.che.api.core.model.workspace.devfile.Devfile;
-import org.eclipse.che.api.devfile.server.model.impl.PersistentDevfileImpl;
+import org.eclipse.che.api.devfile.server.model.impl.UserDevfileImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +35,7 @@ public class DevfileManager {
    * @throws ServerException when any other error occurs
    * @throws ValidationException when incoming configuration or attributes are not valid
    */
-  public PersistentDevfileImpl createDevfile(Devfile devfile)
+  public UserDevfileImpl createDevfile(Devfile devfile)
       throws ServerException, NotFoundException, ConflictException, ValidationException {
     requireNonNull(devfile, "Required non-null devfile");
     return null;

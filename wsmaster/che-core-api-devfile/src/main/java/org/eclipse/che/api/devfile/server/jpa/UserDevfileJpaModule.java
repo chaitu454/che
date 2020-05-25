@@ -12,12 +12,13 @@
 package org.eclipse.che.api.devfile.server.jpa;
 
 import com.google.inject.AbstractModule;
-import org.eclipse.che.api.devfile.server.spi.DevfileDao;
+import org.eclipse.che.api.devfile.server.spi.UserDevfileDao;
 
-public class DevfileJpaModule extends AbstractModule {
+public class UserDevfileJpaModule extends AbstractModule {
   @Override
   protected void configure() {
-    bind(DevfileDao.class).to(JpaDevfileDao.class);
-    bind(JpaDevfileDao.RemoveDevfilesBeforeUserRemovedEventSubscriber.class).asEagerSingleton();
+    bind(UserDevfileDao.class).to(JpaUserUserDevfileDao.class);
+    bind(JpaUserUserDevfileDao.RemoveDevfilesBeforeUserRemovedEventSubscriber.class)
+        .asEagerSingleton();
   }
 }

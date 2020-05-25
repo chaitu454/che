@@ -29,8 +29,8 @@ import org.eclipse.che.api.core.NotFoundException;
 import org.eclipse.che.api.core.Page;
 import org.eclipse.che.api.core.ServerException;
 import org.eclipse.che.api.core.notification.EventService;
-import org.eclipse.che.api.devfile.server.model.impl.PersistentDevfileImpl;
-import org.eclipse.che.api.devfile.server.spi.DevfileDao;
+import org.eclipse.che.api.devfile.server.model.impl.UserDevfileImpl;
+import org.eclipse.che.api.devfile.server.spi.UserDevfileDao;
 import org.eclipse.che.api.user.server.event.BeforeUserRemovedEvent;
 import org.eclipse.che.api.workspace.server.model.impl.devfile.DevfileImpl;
 import org.eclipse.che.core.db.cascade.CascadeEventSubscriber;
@@ -40,14 +40,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class JpaDevfileDao implements DevfileDao {
-  private static final Logger LOG = LoggerFactory.getLogger(JpaDevfileDao.class);
+public class JpaUserUserDevfileDao implements UserDevfileDao {
+  private static final Logger LOG = LoggerFactory.getLogger(JpaUserUserDevfileDao.class);
 
   @Inject private Provider<EntityManager> managerProvider;
 
   @Override
-  public PersistentDevfileImpl create(PersistentDevfileImpl devfile)
-      throws ConflictException, ServerException {
+  public UserDevfileImpl create(UserDevfileImpl devfile) throws ConflictException, ServerException {
     requireNonNull(devfile);
     try {
       doCreate(devfile);
@@ -60,15 +59,15 @@ public class JpaDevfileDao implements DevfileDao {
     } catch (RuntimeException ex) {
       throw new ServerException(ex.getLocalizedMessage(), ex);
     }
-    return new PersistentDevfileImpl(devfile);
+    return new UserDevfileImpl(devfile);
   }
 
   @Override
-  public PersistentDevfileImpl update(PersistentDevfileImpl update)
+  public UserDevfileImpl update(UserDevfileImpl update)
       throws NotFoundException, ConflictException, ServerException {
     requireNonNull(update);
     try {
-      return new PersistentDevfileImpl(doUpdate(update));
+      return new UserDevfileImpl(doUpdate(update));
     } catch (DuplicateKeyException ex) {
       throw new ConflictException(
           format("Factory with name '%s' already exists for current user", update.getName()));
@@ -89,15 +88,14 @@ public class JpaDevfileDao implements DevfileDao {
 
   @Override
   @Transactional(rollbackOn = {ServerException.class})
-  public PersistentDevfileImpl getById(String id) throws NotFoundException, ServerException {
+  public UserDevfileImpl getById(String id) throws NotFoundException, ServerException {
     requireNonNull(id);
     try {
-      final PersistentDevfileImpl devfile =
-          managerProvider.get().find(PersistentDevfileImpl.class, id);
+      final UserDevfileImpl devfile = managerProvider.get().find(UserDevfileImpl.class, id);
       if (devfile == null) {
         throw new NotFoundException(format("Factory with id '%s' doesn't exist", id));
       }
-      return new PersistentDevfileImpl(devfile);
+      return new UserDevfileImpl(devfile);
     } catch (RuntimeException ex) {
       throw new ServerException(ex.getLocalizedMessage(), ex);
     }
@@ -105,23 +103,23 @@ public class JpaDevfileDao implements DevfileDao {
 
   @Override
   @Transactional(rollbackOn = {ServerException.class})
-  public Page<PersistentDevfileImpl> getDevfiles(String userId, int maxItems, long skipCount)
+  public Page<UserDevfileImpl> getDevfiles(String userId, int maxItems, long skipCount)
       throws ServerException {
     try {
-      final List<PersistentDevfileImpl> list =
+      final List<UserDevfileImpl> list =
           managerProvider
               .get()
-              .createNamedQuery("PersistentDevfile.getAll", PersistentDevfileImpl.class)
+              .createNamedQuery("UserDevfile.getAll", UserDevfileImpl.class)
               .setMaxResults(maxItems)
               .setFirstResult((int) skipCount)
               .getResultList()
               .stream()
-              .map(PersistentDevfileImpl::new)
+              .map(UserDevfileImpl::new)
               .collect(Collectors.toList());
       final long count =
           managerProvider
               .get()
-              .createNamedQuery("PersistentDevfile.getDevfilesTotalCount", Long.class)
+              .createNamedQuery("UserDevfile.getDevfilesTotalCount", Long.class)
               .getSingleResult();
       return new Page<>(list, skipCount, maxItems, count);
     } catch (RuntimeException x) {
@@ -130,20 +128,20 @@ public class JpaDevfileDao implements DevfileDao {
   }
 
   @Transactional
-  protected void doCreate(PersistentDevfileImpl devfile) {
+  protected void doCreate(UserDevfileImpl devfile) {
     final EntityManager manager = managerProvider.get();
     manager.persist(devfile);
     manager.flush();
   }
 
   @Transactional
-  protected PersistentDevfileImpl doUpdate(PersistentDevfileImpl update) throws NotFoundException {
+  protected UserDevfileImpl doUpdate(UserDevfileImpl update) throws NotFoundException {
     final EntityManager manager = managerProvider.get();
     if (manager.find(DevfileImpl.class, update.getId()) == null) {
       throw new NotFoundException(
           format("Could not update devfile with id %s because it doesn't exist", update.getId()));
     }
-    PersistentDevfileImpl merged = manager.merge(update);
+    UserDevfileImpl merged = manager.merge(update);
     manager.flush();
     return merged;
   }
@@ -161,7 +159,7 @@ public class JpaDevfileDao implements DevfileDao {
   @Singleton
   public static class RemoveDevfilesBeforeUserRemovedEventSubscriber
       extends CascadeEventSubscriber<BeforeUserRemovedEvent> {
-    @Inject private DevfileDao devfileDao;
+    @Inject private UserDevfileDao userDevfileDao;
     @Inject private EventService eventService;
 
     @PostConstruct
@@ -176,11 +174,11 @@ public class JpaDevfileDao implements DevfileDao {
 
     @Override
     public void onCascadeEvent(BeforeUserRemovedEvent event) throws ServerException {
-      for (PersistentDevfileImpl devfile :
+      for (UserDevfileImpl devfile :
           iterate(
               (maxItems, skipCount) ->
-                  devfileDao.getDevfiles(event.getUser().getId(), maxItems, skipCount))) {
-        devfileDao.remove(devfile.getId());
+                  userDevfileDao.getDevfiles(event.getUser().getId(), maxItems, skipCount))) {
+        userDevfileDao.remove(devfile.getId());
       }
     }
   }

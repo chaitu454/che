@@ -26,18 +26,16 @@ import org.eclipse.che.api.core.model.workspace.devfile.Command;
 import org.eclipse.che.api.core.model.workspace.devfile.Component;
 import org.eclipse.che.api.core.model.workspace.devfile.Devfile;
 import org.eclipse.che.api.core.model.workspace.devfile.Metadata;
-import org.eclipse.che.api.core.model.workspace.devfile.PersistentDevfile;
 import org.eclipse.che.api.core.model.workspace.devfile.Project;
+import org.eclipse.che.api.core.model.workspace.devfile.UserDevfile;
 import org.eclipse.che.api.workspace.server.model.impl.devfile.DevfileImpl;
 
-@Entity(name = "PersistentDevfile")
+@Entity(name = "UserDevfile")
 @NamedQueries({
-  @NamedQuery(name = "PersistentDevfile.getAll", query = "SELECT d FROM PersistentDevfile d"),
-  @NamedQuery(
-      name = "PersistentDevfile.getAllCount",
-      query = "SELECT COUNT(d) FROM PersistentDevfile d"),
+  @NamedQuery(name = "UserDevfile.getAll", query = "SELECT d FROM UserDevfile d"),
+  @NamedQuery(name = "UserDevfile.getAllCount", query = "SELECT COUNT(d) FROM UserDevfile d"),
 })
-public class PersistentDevfileImpl implements PersistentDevfile {
+public class UserDevfileImpl implements UserDevfile {
 
   @Id
   @Column(name = "id")
@@ -47,14 +45,14 @@ public class PersistentDevfileImpl implements PersistentDevfile {
   @JoinColumn(name = "devfile_id")
   private DevfileImpl devfile;
 
-  public PersistentDevfileImpl() {}
+  public UserDevfileImpl() {}
 
-  public PersistentDevfileImpl(String id, Devfile devfile) {
+  public UserDevfileImpl(String id, Devfile devfile) {
     this.devfile = new DevfileImpl(devfile);
     this.id = id;
   }
 
-  public PersistentDevfileImpl(PersistentDevfileImpl devfile) {
+  public UserDevfileImpl(UserDevfileImpl devfile) {
     this.devfile = devfile.devfile;
     this.id = devfile.getId();
   }
@@ -102,7 +100,7 @@ public class PersistentDevfileImpl implements PersistentDevfile {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    PersistentDevfileImpl devfile1 = (PersistentDevfileImpl) o;
+    UserDevfileImpl devfile1 = (UserDevfileImpl) o;
     return id.equals(devfile1.id) && devfile.equals(devfile1.devfile);
   }
 
@@ -113,6 +111,6 @@ public class PersistentDevfileImpl implements PersistentDevfile {
 
   @Override
   public String toString() {
-    return "PersistentDevfileImpl{" + "id='" + id + '\'' + ", devfile=" + devfile + '}';
+    return "UserDevfileImpl{" + "id='" + id + '\'' + ", devfile=" + devfile + '}';
   }
 }

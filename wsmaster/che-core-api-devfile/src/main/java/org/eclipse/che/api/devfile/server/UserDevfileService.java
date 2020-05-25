@@ -38,15 +38,15 @@ import org.eclipse.che.api.core.ForbiddenException;
 import org.eclipse.che.api.core.NotFoundException;
 import org.eclipse.che.api.core.ServerException;
 import org.eclipse.che.api.core.rest.Service;
-import org.eclipse.che.api.devfile.shared.dto.PersistentDevfileDto;
+import org.eclipse.che.api.devfile.shared.dto.UserDevfileDto;
 import org.eclipse.che.api.workspace.shared.dto.WorkspaceConfigDto;
 import org.eclipse.che.api.workspace.shared.dto.WorkspaceDto;
 import org.eclipse.che.api.workspace.shared.dto.devfile.DevfileDto;
 
 /** Defines Persistent Devfile REST API. */
-@Api(value = "/peristendevfile", description = "Persistent Devfile REST API")
-@Path("/peristendevfile")
-public class PersistentDevfileService extends Service {
+@Api(value = "/userdevfile", description = "Persistent Devfile REST API")
+@Path("/userdevfile")
+public class UserDevfileService extends Service {
 
   @POST
   @Consumes({APPLICATION_JSON, "text/yaml", "text/x-yaml"})
@@ -88,7 +88,7 @@ public class PersistentDevfileService extends Service {
     @ApiResponse(code = 403, message = "The user is not workspace owner"),
     @ApiResponse(code = 500, message = "Internal server error occurred")
   })
-  public PersistentDevfileDto getById(
+  public UserDevfileDto getById(
       @ApiParam(value = "PersistentDevfil identifier") @PathParam("id") String id)
       throws NotFoundException, ServerException, ForbiddenException, BadRequestException {
     return null;
@@ -99,7 +99,7 @@ public class PersistentDevfileService extends Service {
   @ApiOperation(
       value = "Get devfiles which user can read",
       notes = "This operation can be performed only by authorized user",
-      response = PersistentDevfileDto.class,
+      response = UserDevfileDto.class,
       responseContainer = "List")
   @ApiResponses({
     @ApiResponse(code = 200, message = "The devfiles successfully fetched"),
@@ -134,7 +134,7 @@ public class PersistentDevfileService extends Service {
   })
   public WorkspaceDto update(
       @ApiParam("The devfile id") @PathParam("id") String id,
-      @ApiParam(value = "The devfile update", required = true) PersistentDevfileDto update)
+      @ApiParam(value = "The devfile update", required = true) UserDevfileDto update)
       throws BadRequestException, ServerException, ForbiddenException, NotFoundException,
           ConflictException {
     return null;

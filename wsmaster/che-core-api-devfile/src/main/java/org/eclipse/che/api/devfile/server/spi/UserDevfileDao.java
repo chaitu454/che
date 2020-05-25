@@ -15,10 +15,10 @@ import org.eclipse.che.api.core.ConflictException;
 import org.eclipse.che.api.core.NotFoundException;
 import org.eclipse.che.api.core.Page;
 import org.eclipse.che.api.core.ServerException;
-import org.eclipse.che.api.devfile.server.model.impl.PersistentDevfileImpl;
+import org.eclipse.che.api.devfile.server.model.impl.UserDevfileImpl;
 
-/** Defines data access object contract for {@code PersistentDevfileImpl}. */
-public interface DevfileDao {
+/** Defines data access object contract for {@code UserDevfileImpl}. */
+public interface UserDevfileDao {
 
   /**
    * Creates Devfile.
@@ -28,8 +28,7 @@ public interface DevfileDao {
    * @throws NullPointerException when {@code devfile} is null
    * @throws ServerException when any other error occurs
    */
-  PersistentDevfileImpl create(PersistentDevfileImpl devfile)
-      throws ServerException, ConflictException;
+  UserDevfileImpl create(UserDevfileImpl devfile) throws ServerException, ConflictException;
 
   /**
    * Updates devfile to the new entity, using replacement strategy.
@@ -41,7 +40,7 @@ public interface DevfileDao {
    * @throws ConflictException when any conflict situation occurs
    * @throws ServerException when any other error occurs
    */
-  PersistentDevfileImpl update(PersistentDevfileImpl devfile)
+  UserDevfileImpl update(UserDevfileImpl devfile)
       throws NotFoundException, ConflictException, ServerException;
 
   /**
@@ -62,7 +61,7 @@ public interface DevfileDao {
    * @throws NotFoundException when devfile with given {@code id} is not found
    * @throws ServerException when any other error occurs
    */
-  PersistentDevfileImpl getById(String id) throws NotFoundException, ServerException;
+  UserDevfileImpl getById(String id) throws NotFoundException, ServerException;
 
   /**
    * Gets all devfiles which user can read.
@@ -71,6 +70,6 @@ public interface DevfileDao {
    * @return list of devfiles which user can read, never null
    * @throws ServerException when any other error occurs during devfile fetching
    */
-  Page<PersistentDevfileImpl> getDevfiles(String userId, int maxItems, long skipCount)
+  Page<UserDevfileImpl> getDevfiles(String userId, int maxItems, long skipCount)
       throws ServerException;
 }

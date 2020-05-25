@@ -11,19 +11,19 @@
  */
 package org.eclipse.che.api.devfile.shared.event;
 
-import org.eclipse.che.api.core.model.workspace.devfile.PersistentDevfile;
+import org.eclipse.che.api.core.model.workspace.devfile.UserDevfile;
 import org.eclipse.che.api.core.notification.EventOrigin;
 
 /** Informs about persisted devfile removal. */
 @EventOrigin("devfile")
 public class DevfileDeletedEvent {
-  private final PersistentDevfile persistentDevfile;
+  private final UserDevfile userDevfile;
 
-  public DevfileDeletedEvent(PersistentDevfile persistentDevfile) {
-    this.persistentDevfile = persistentDevfile;
+  public DevfileDeletedEvent(UserDevfile userDevfile) {
+    this.userDevfile = userDevfile;
   }
 
-  public PersistentDevfile getPersistentDevfile() {
-    return persistentDevfile;
+  public UserDevfile getUserDevfile() {
+    return userDevfile;
   }
 }

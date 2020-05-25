@@ -21,8 +21,8 @@ import com.google.common.collect.ImmutableMap;
 import java.util.Arrays;
 import java.util.stream.Stream;
 import javax.inject.Inject;
-import org.eclipse.che.api.devfile.server.model.impl.PersistentDevfileImpl;
-import org.eclipse.che.api.devfile.server.spi.DevfileDao;
+import org.eclipse.che.api.devfile.server.model.impl.UserDevfileImpl;
+import org.eclipse.che.api.devfile.server.spi.UserDevfileDao;
 import org.eclipse.che.api.user.server.model.impl.UserImpl;
 import org.eclipse.che.api.workspace.server.model.impl.devfile.ActionImpl;
 import org.eclipse.che.api.workspace.server.model.impl.devfile.ComponentImpl;
@@ -42,35 +42,34 @@ import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 @Listeners(TckListener.class)
-@Test(suiteName = DevfileDaoTest.SUITE_NAME)
-public class DevfileDaoTest {
+@Test(suiteName = UserDevfileDaoTest.SUITE_NAME)
+public class UserDevfileDaoTest {
   public static final String SUITE_NAME = "DevfileDaoTck";
   private static final int ENTRY_COUNT = 5;
 
-  private PersistentDevfileImpl[] devfiles;
+  private UserDevfileImpl[] devfiles;
   private UserImpl[] users;
 
-  @Inject private DevfileDao devfileDaoDao;
+  @Inject private UserDevfileDao userDevfileDaoDao;
 
-  @Inject private TckRepository<PersistentDevfileImpl> devfileTckRepository;
+  @Inject private TckRepository<UserDevfileImpl> devfileTckRepository;
 
   @Inject private TckRepository<UserImpl> userTckRepository;
 
   @BeforeMethod
   public void setUp() throws Exception {
-    devfiles = new PersistentDevfileImpl[ENTRY_COUNT];
+    devfiles = new UserDevfileImpl[ENTRY_COUNT];
     users = new UserImpl[ENTRY_COUNT];
     for (int i = 0; i < ENTRY_COUNT; i++) {
       users[i] = new UserImpl("userId_" + i, "email_" + i, "name" + i);
     }
     for (int i = 0; i < ENTRY_COUNT; i++) {
       devfiles[i] =
-          createPersistentDevfile(
+          createUserDevfile(
               NameGenerator.generate("id-", 6), NameGenerator.generate("devfileName", 6));
     }
     userTckRepository.createAll(Arrays.asList(users));
-    devfileTckRepository.createAll(
-        Stream.of(devfiles).map(PersistentDevfileImpl::new).collect(toList()));
+    devfileTckRepository.createAll(Stream.of(devfiles).map(UserDevfileImpl::new).collect(toList()));
   }
 
   @AfterMethod
@@ -80,30 +79,30 @@ public class DevfileDaoTest {
   }
 
   @Test
-  public void shouldGetPersistentDevfileById() throws Exception {
-    final PersistentDevfileImpl devfile = devfiles[0];
+  public void shouldGetUserDevfileById() throws Exception {
+    final UserDevfileImpl devfile = devfiles[0];
 
-    assertEquals(devfileDaoDao.getById(devfile.getId()), devfile);
+    assertEquals(userDevfileDaoDao.getById(devfile.getId()), devfile);
   }
 
-  @Test(dependsOnMethods = "shouldGetPersistentDevfileById")
-  public void shouldPersistentDevfile() throws Exception {
-    final PersistentDevfileImpl devfile = createPersistentDevfile();
-    devfileDaoDao.create(devfile);
+  @Test(dependsOnMethods = "shouldGetUserDevfileById")
+  public void shouldUserDevfile() throws Exception {
+    final UserDevfileImpl devfile = createUserDevfile();
+    userDevfileDaoDao.create(devfile);
 
-    assertEquals(devfileDaoDao.getById(devfile.getId()), new PersistentDevfileImpl(devfile));
+    assertEquals(userDevfileDaoDao.getById(devfile.getId()), new UserDevfileImpl(devfile));
   }
 
-  private static PersistentDevfileImpl createPersistentDevfile() {
-    return createPersistentDevfile(NameGenerator.generate("name", 6));
+  private static UserDevfileImpl createUserDevfile() {
+    return createUserDevfile(NameGenerator.generate("name", 6));
   }
 
-  private static PersistentDevfileImpl createPersistentDevfile(String name) {
-    return createPersistentDevfile(NameGenerator.generate("id", 6), name);
+  private static UserDevfileImpl createUserDevfile(String name) {
+    return createUserDevfile(NameGenerator.generate("id", 6), name);
   }
 
-  private static PersistentDevfileImpl createPersistentDevfile(String id, String name) {
-    return new PersistentDevfileImpl(id, createDevfile(name));
+  private static UserDevfileImpl createUserDevfile(String id, String name) {
+    return new UserDevfileImpl(id, createDevfile(name));
   }
 
   private static DevfileImpl createDevfile(String name) {
