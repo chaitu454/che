@@ -11,8 +11,17 @@
  */
 package org.eclipse.che.api.devfile.server.spi.tck;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
+import static java.util.Collections.singletonMap;
+import static java.util.stream.Collectors.toList;
+import static org.testng.Assert.assertEquals;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import java.util.Arrays;
+import java.util.stream.Stream;
+import javax.inject.Inject;
 import org.eclipse.che.api.core.ConflictException;
 import org.eclipse.che.api.core.NotFoundException;
 import org.eclipse.che.api.devfile.server.model.impl.UserDevfileImpl;
@@ -35,16 +44,6 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
-
-import javax.inject.Inject;
-import java.util.Arrays;
-import java.util.stream.Stream;
-
-import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
-import static java.util.Collections.singletonMap;
-import static java.util.stream.Collectors.toList;
-import static org.testng.Assert.assertEquals;
 
 @Listeners(TckListener.class)
 @Test(suiteName = UserDevfileDaoTest.SUITE_NAME)

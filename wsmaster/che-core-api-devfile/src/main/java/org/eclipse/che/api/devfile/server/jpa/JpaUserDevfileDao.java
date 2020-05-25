@@ -32,7 +32,6 @@ import org.eclipse.che.api.core.notification.EventService;
 import org.eclipse.che.api.devfile.server.model.impl.UserDevfileImpl;
 import org.eclipse.che.api.devfile.server.spi.UserDevfileDao;
 import org.eclipse.che.api.user.server.event.BeforeUserRemovedEvent;
-import org.eclipse.che.api.workspace.server.model.impl.devfile.DevfileImpl;
 import org.eclipse.che.core.db.cascade.CascadeEventSubscriber;
 import org.eclipse.che.core.db.jpa.DuplicateKeyException;
 import org.eclipse.che.core.db.jpa.IntegrityConstraintViolationException;
