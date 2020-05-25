@@ -74,7 +74,7 @@ public class UserDevfileTckModule extends TckModule {
         .toInstance(new FlywaySchemaInitializer(server.getDataSource(), "che-schema"));
     bind(TckResourcesCleaner.class).toInstance(new H2JpaCleaner(server));
 
-    bind(UserDevfileDao.class).to(JpaUserUserDevfileDao.class);
+    bind(UserDevfileDao.class).to(JpaUserDevfileDao.class);
 
     bind(new TypeLiteral<TckRepository<UserDevfileImpl>>() {})
         .toInstance(new JpaTckRepository<>(UserDevfileImpl.class));

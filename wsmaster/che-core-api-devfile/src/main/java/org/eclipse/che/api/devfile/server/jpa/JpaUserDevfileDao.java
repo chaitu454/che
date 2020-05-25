@@ -40,8 +40,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class JpaUserUserDevfileDao implements UserDevfileDao {
-  private static final Logger LOG = LoggerFactory.getLogger(JpaUserUserDevfileDao.class);
+public class JpaUserDevfileDao implements UserDevfileDao {
+  private static final Logger LOG = LoggerFactory.getLogger(JpaUserDevfileDao.class);
 
   @Inject private Provider<EntityManager> managerProvider;
 
@@ -149,7 +149,7 @@ public class JpaUserUserDevfileDao implements UserDevfileDao {
   @Transactional
   protected void doRemove(String id) {
     final EntityManager manager = managerProvider.get();
-    final DevfileImpl devfile = manager.find(DevfileImpl.class, id);
+    final UserDevfileImpl devfile = manager.find(UserDevfileImpl.class, id);
     if (devfile != null) {
       manager.remove(devfile);
       manager.flush();

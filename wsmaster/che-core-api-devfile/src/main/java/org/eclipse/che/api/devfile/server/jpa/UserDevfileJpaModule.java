@@ -17,8 +17,8 @@ import org.eclipse.che.api.devfile.server.spi.UserDevfileDao;
 public class UserDevfileJpaModule extends AbstractModule {
   @Override
   protected void configure() {
-    bind(UserDevfileDao.class).to(JpaUserUserDevfileDao.class);
-    bind(JpaUserUserDevfileDao.RemoveDevfilesBeforeUserRemovedEventSubscriber.class)
+    bind(UserDevfileDao.class).to(JpaUserDevfileDao.class);
+    bind(JpaUserDevfileDao.RemoveDevfilesBeforeUserRemovedEventSubscriber.class)
         .asEagerSingleton();
   }
 }
