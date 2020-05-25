@@ -137,7 +137,7 @@ public class JpaUserUserDevfileDao implements UserDevfileDao {
   @Transactional
   protected UserDevfileImpl doUpdate(UserDevfileImpl update) throws NotFoundException {
     final EntityManager manager = managerProvider.get();
-    if (manager.find(DevfileImpl.class, update.getId()) == null) {
+    if (manager.find(UserDevfileImpl.class, update.getId()) == null) {
       throw new NotFoundException(
           format("Could not update devfile with id %s because it doesn't exist", update.getId()));
     }

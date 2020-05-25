@@ -17,14 +17,17 @@ import static java.util.Collections.singletonMap;
 import static java.util.stream.Collectors.toList;
 import static org.testng.Assert.assertEquals;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.util.Arrays;
 import java.util.stream.Stream;
 import javax.inject.Inject;
+import org.eclipse.che.api.core.ConflictException;
 import org.eclipse.che.api.devfile.server.model.impl.UserDevfileImpl;
 import org.eclipse.che.api.devfile.server.spi.UserDevfileDao;
 import org.eclipse.che.api.user.server.model.impl.UserImpl;
 import org.eclipse.che.api.workspace.server.model.impl.devfile.ActionImpl;
+import org.eclipse.che.api.workspace.server.model.impl.devfile.CommandImpl;
 import org.eclipse.che.api.workspace.server.model.impl.devfile.ComponentImpl;
 import org.eclipse.che.api.workspace.server.model.impl.devfile.DevfileImpl;
 import org.eclipse.che.api.workspace.server.model.impl.devfile.EndpointImpl;
@@ -86,11 +89,64 @@ public class UserDevfileDaoTest {
   }
 
   @Test(dependsOnMethods = "shouldGetUserDevfileById")
-  public void shouldUserDevfile() throws Exception {
+  public void shouldCreateUserDevfile() throws Exception {
     final UserDevfileImpl devfile = createUserDevfile();
     userDevfileDaoDao.create(devfile);
 
     assertEquals(userDevfileDaoDao.getById(devfile.getId()), new UserDevfileImpl(devfile));
+  }
+
+  @Test(expectedExceptions = NullPointerException.class)
+  public void shouldThrowNpeWhenCreateNullDevfile() throws Exception {
+    userDevfileDaoDao.create(null);
+  }
+
+  @Test(expectedExceptions = ConflictException.class)
+  public void shouldThrowConflictExceptionWhenCreatingUserDevfileWithExistingId() throws Exception {
+    // given
+    final UserDevfileImpl devfile = createUserDevfile();
+    final UserDevfileImpl existing = devfiles[0];
+    devfile.setId(existing.getId());
+    // when
+    userDevfileDaoDao.create(devfile);
+    // then
+  }
+
+  @Test
+  public void shouldUpdateUserDevfile() throws Exception {
+    // given
+    final UserDevfileImpl update = devfiles[0];
+    update.setApiVersion("V15.0");
+    update.setProjects(
+        ImmutableList.of(
+            new ProjectImpl(
+                "projectUp2",
+                new SourceImpl(
+                    "typeUp2",
+                    "http://location",
+                    "branch2",
+                    "point2",
+                    "tag2",
+                    "commit2",
+                    "sparseCheckoutDir2"),
+                "path2")));
+    update.setComponents(ImmutableList.of(new ComponentImpl("type3", "id54")));
+    update.setCommands(
+        ImmutableList.of(
+            new CommandImpl(
+                new CommandImpl(
+                    "cmd1",
+                    singletonList(
+                        new ActionImpl(
+                            "exe44", "compo2nent2", "run.sh", "/home/user/2", null, null)),
+                    singletonMap("attr1", "value1"),
+                    null))));
+    update.setAttributes(ImmutableMap.of("key2", "val34"));
+    update.setMetadata(new MetadataImpl("myNewName"));
+    // when
+    userDevfileDaoDao.update(update);
+    // then
+    assertEquals(userDevfileDaoDao.getById(update.getId()), update);
   }
 
   private static UserDevfileImpl createUserDevfile() {
@@ -134,12 +190,10 @@ public class UserDevfileDaoTest {
     ActionImpl action2 =
         new ActionImpl("exec2", "component2", "run.sh", "/home/user/2", null, null);
 
-    org.eclipse.che.api.workspace.server.model.impl.devfile.CommandImpl command1 =
-        new org.eclipse.che.api.workspace.server.model.impl.devfile.CommandImpl(
-            name + "-1", singletonList(action1), singletonMap("attr1", "value1"), null);
-    org.eclipse.che.api.workspace.server.model.impl.devfile.CommandImpl command2 =
-        new org.eclipse.che.api.workspace.server.model.impl.devfile.CommandImpl(
-            name + "-2", singletonList(action2), singletonMap("attr2", "value2"), null);
+    CommandImpl command1 =
+        new CommandImpl(name + "-1", singletonList(action1), singletonMap("attr1", "value1"), null);
+    CommandImpl command2 =
+        new CommandImpl(name + "-2", singletonList(action2), singletonMap("attr2", "value2"), null);
 
     EntrypointImpl entrypoint1 =
         new EntrypointImpl(

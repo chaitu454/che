@@ -28,7 +28,11 @@ import org.eclipse.che.api.core.model.workspace.devfile.Devfile;
 import org.eclipse.che.api.core.model.workspace.devfile.Metadata;
 import org.eclipse.che.api.core.model.workspace.devfile.Project;
 import org.eclipse.che.api.core.model.workspace.devfile.UserDevfile;
+import org.eclipse.che.api.workspace.server.model.impl.devfile.CommandImpl;
+import org.eclipse.che.api.workspace.server.model.impl.devfile.ComponentImpl;
 import org.eclipse.che.api.workspace.server.model.impl.devfile.DevfileImpl;
+import org.eclipse.che.api.workspace.server.model.impl.devfile.MetadataImpl;
+import org.eclipse.che.api.workspace.server.model.impl.devfile.ProjectImpl;
 
 @Entity(name = "UserDevfile")
 @NamedQueries({
@@ -53,8 +57,7 @@ public class UserDevfileImpl implements UserDevfile {
   }
 
   public UserDevfileImpl(UserDevfileImpl devfile) {
-    this.devfile = devfile.devfile;
-    this.id = devfile.getId();
+    this(devfile.id, devfile.devfile);
   }
 
   @Override
@@ -94,6 +97,34 @@ public class UserDevfileImpl implements UserDevfile {
   @Override
   public Metadata getMetadata() {
     return devfile.getMetadata();
+  }
+
+  public void setApiVersion(String apiVersion) {
+    devfile.setApiVersion(apiVersion);
+  }
+
+  public void setName(String name) {
+    devfile.setName(name);
+  }
+
+  public void setProjects(List<ProjectImpl> projects) {
+    devfile.setProjects(projects);
+  }
+
+  public void setComponents(List<ComponentImpl> components) {
+    devfile.setComponents(components);
+  }
+
+  public void setCommands(List<CommandImpl> commands) {
+    devfile.setCommands(commands);
+  }
+
+  public void setAttributes(Map<String, String> attributes) {
+    devfile.setAttributes(attributes);
+  }
+
+  public void setMetadata(MetadataImpl metadata) {
+    devfile.setMetadata(metadata);
   }
 
   @Override
