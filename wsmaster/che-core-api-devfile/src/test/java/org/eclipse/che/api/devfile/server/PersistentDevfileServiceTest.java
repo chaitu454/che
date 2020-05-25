@@ -15,11 +15,6 @@ import org.everrest.assured.EverrestJetty;
 import org.mockito.testng.MockitoTestNGListener;
 import org.testng.annotations.Listeners;
 
-/**
- * Tests for {@link DevfileService}.
- *
- * @author Yevhenii Voevodin
- * @author Sergii Leshchenko
- */
+/** Tests for {@link PersistentDevfileService}. */
 @Listeners(value = {EverrestJetty.class, MockitoTestNGListener.class})
-public class DevfileServiceTest {}
+public class PersistentDevfileServiceTest {}
