@@ -11,14 +11,9 @@
  */
 package org.eclipse.che.api.devfile.server.model.impl;
 
-import org.eclipse.che.api.core.model.workspace.devfile.Command;
-import org.eclipse.che.api.core.model.workspace.devfile.Component;
-import org.eclipse.che.api.core.model.workspace.devfile.Devfile;
-import org.eclipse.che.api.core.model.workspace.devfile.Metadata;
-import org.eclipse.che.api.core.model.workspace.devfile.PersistentDevfile;
-import org.eclipse.che.api.core.model.workspace.devfile.Project;
-import org.eclipse.che.api.workspace.server.model.impl.devfile.DevfileImpl;
-
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,9 +22,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import org.eclipse.che.api.core.model.workspace.devfile.Command;
+import org.eclipse.che.api.core.model.workspace.devfile.Component;
+import org.eclipse.che.api.core.model.workspace.devfile.Devfile;
+import org.eclipse.che.api.core.model.workspace.devfile.Metadata;
+import org.eclipse.che.api.core.model.workspace.devfile.PersistentDevfile;
+import org.eclipse.che.api.core.model.workspace.devfile.Project;
+import org.eclipse.che.api.workspace.server.model.impl.devfile.DevfileImpl;
 
 @Entity(name = "PersistentDevfile")
 @NamedQueries({
@@ -104,8 +103,7 @@ public class PersistentDevfileImpl implements PersistentDevfile {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     PersistentDevfileImpl devfile1 = (PersistentDevfileImpl) o;
-    return id.equals(devfile1.id) &&
-            devfile.equals(devfile1.devfile);
+    return id.equals(devfile1.id) && devfile.equals(devfile1.devfile);
   }
 
   @Override
@@ -115,9 +113,6 @@ public class PersistentDevfileImpl implements PersistentDevfile {
 
   @Override
   public String toString() {
-    return "PersistentDevfileImpl{" +
-            "id='" + id + '\'' +
-            ", devfile=" + devfile +
-            '}';
+    return "PersistentDevfileImpl{" + "id='" + id + '\'' + ", devfile=" + devfile + '}';
   }
 }

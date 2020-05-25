@@ -11,7 +11,19 @@
  */
 package org.eclipse.che.api.devfile.server.jpa;
 
+import static java.lang.String.format;
+import static java.util.Objects.requireNonNull;
+import static org.eclipse.che.api.core.Pages.iterate;
+
 import com.google.inject.persist.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Provider;
+import javax.inject.Singleton;
+import javax.persistence.EntityManager;
 import org.eclipse.che.api.core.ConflictException;
 import org.eclipse.che.api.core.NotFoundException;
 import org.eclipse.che.api.core.Page;
@@ -27,19 +39,6 @@ import org.eclipse.che.core.db.jpa.IntegrityConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.inject.Inject;
-import javax.inject.Provider;
-import javax.inject.Singleton;
-import javax.persistence.EntityManager;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static java.lang.String.format;
-import static java.util.Objects.requireNonNull;
-import static org.eclipse.che.api.core.Pages.iterate;
-
 /** @author Anton Korneta */
 @Singleton
 public class JpaDevfileDao implements DevfileDao {
@@ -48,7 +47,8 @@ public class JpaDevfileDao implements DevfileDao {
   @Inject private Provider<EntityManager> managerProvider;
 
   @Override
-  public PersistentDevfileImpl create(PersistentDevfileImpl devfile) throws ConflictException, ServerException {
+  public PersistentDevfileImpl create(PersistentDevfileImpl devfile)
+      throws ConflictException, ServerException {
     requireNonNull(devfile);
     try {
       doCreate(devfile);
@@ -93,7 +93,8 @@ public class JpaDevfileDao implements DevfileDao {
   public PersistentDevfileImpl getById(String id) throws NotFoundException, ServerException {
     requireNonNull(id);
     try {
-      final PersistentDevfileImpl devfile = managerProvider.get().find(PersistentDevfileImpl.class, id);
+      final PersistentDevfileImpl devfile =
+          managerProvider.get().find(PersistentDevfileImpl.class, id);
       if (devfile == null) {
         throw new NotFoundException(format("Factory with id '%s' doesn't exist", id));
       }
@@ -103,33 +104,31 @@ public class JpaDevfileDao implements DevfileDao {
     }
   }
 
-
   @Override
   @Transactional(rollbackOn = {ServerException.class})
   public Page<PersistentDevfileImpl> getDevfiles(String userId, int maxItems, long skipCount)
       throws ServerException {
     try {
       final List<PersistentDevfileImpl> list =
-              managerProvider
-                      .get()
-                      .createNamedQuery("PersistentDevfile.getAll", PersistentDevfileImpl.class)
-                      .setMaxResults(maxItems)
-                      .setFirstResult((int) skipCount)
-                      .getResultList()
-                      .stream()
-                      .map(PersistentDevfileImpl::new)
-                      .collect(Collectors.toList());
+          managerProvider
+              .get()
+              .createNamedQuery("PersistentDevfile.getAll", PersistentDevfileImpl.class)
+              .setMaxResults(maxItems)
+              .setFirstResult((int) skipCount)
+              .getResultList()
+              .stream()
+              .map(PersistentDevfileImpl::new)
+              .collect(Collectors.toList());
       final long count =
-              managerProvider
-                      .get()
-                      .createNamedQuery("PersistentDevfile.getDevfilesTotalCount", Long.class)
-                      .getSingleResult();
+          managerProvider
+              .get()
+              .createNamedQuery("PersistentDevfile.getDevfilesTotalCount", Long.class)
+              .getSingleResult();
       return new Page<>(list, skipCount, maxItems, count);
     } catch (RuntimeException x) {
       throw new ServerException(x.getLocalizedMessage(), x);
     }
   }
-
 
   @Transactional
   protected void doCreate(PersistentDevfileImpl devfile) {
