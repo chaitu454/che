@@ -11,19 +11,7 @@
  */
 package org.eclipse.che.api.devfile.server.jpa;
 
-import static java.lang.String.format;
-import static java.util.Objects.requireNonNull;
-import static org.eclipse.che.api.core.Pages.iterate;
-
 import com.google.inject.persist.Transactional;
-import java.util.List;
-import java.util.stream.Collectors;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.inject.Inject;
-import javax.inject.Provider;
-import javax.inject.Singleton;
-import javax.persistence.EntityManager;
 import org.eclipse.che.api.core.ConflictException;
 import org.eclipse.che.api.core.NotFoundException;
 import org.eclipse.che.api.core.Page;
@@ -39,7 +27,19 @@ import org.eclipse.che.core.db.jpa.IntegrityConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** @author Anton Korneta */
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Provider;
+import javax.inject.Singleton;
+import javax.persistence.EntityManager;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.lang.String.format;
+import static java.util.Objects.requireNonNull;
+import static org.eclipse.che.api.core.Pages.iterate;
+
 @Singleton
 public class JpaDevfileDao implements DevfileDao {
   private static final Logger LOG = LoggerFactory.getLogger(JpaDevfileDao.class);
@@ -110,13 +110,9 @@ public class JpaDevfileDao implements DevfileDao {
       throws ServerException {
     try {
       final List<PersistentDevfileImpl> list =
-          managerProvider
-              .get()
+          managerProvider.get()
               .createNamedQuery("PersistentDevfile.getAll", PersistentDevfileImpl.class)
-              .setMaxResults(maxItems)
-              .setFirstResult((int) skipCount)
-              .getResultList()
-              .stream()
+              .setMaxResults(maxItems).setFirstResult((int) skipCount).getResultList().stream()
               .map(PersistentDevfileImpl::new)
               .collect(Collectors.toList());
       final long count =

@@ -11,16 +11,7 @@
  */
 package org.eclipse.che.api.devfile.server.spi.tck;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
-import static java.util.Collections.singletonMap;
-import static java.util.stream.Collectors.toList;
-import static org.testng.Assert.assertEquals;
-
 import com.google.common.collect.ImmutableMap;
-import java.util.Arrays;
-import java.util.stream.Stream;
-import javax.inject.Inject;
 import org.eclipse.che.api.devfile.server.model.impl.PersistentDevfileImpl;
 import org.eclipse.che.api.devfile.server.spi.DevfileDao;
 import org.eclipse.che.api.user.server.model.impl.UserImpl;
@@ -40,6 +31,16 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+
+import javax.inject.Inject;
+import java.util.Arrays;
+import java.util.stream.Stream;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
+import static java.util.Collections.singletonMap;
+import static java.util.stream.Collectors.toList;
+import static org.testng.Assert.assertEquals;
 
 @Listeners(TckListener.class)
 @Test(suiteName = DevfileDaoTest.SUITE_NAME)
@@ -84,6 +85,22 @@ public class DevfileDaoTest {
     final PersistentDevfileImpl devfile = devfiles[0];
 
     assertEquals(devfileDaoDao.getById(devfile.getId()), devfile);
+  }
+
+  @Test(dependsOnMethods = "shouldGetPersistentDevfileById")
+  public void shouldPersistentDevfile() throws Exception {
+    final PersistentDevfileImpl devfile = createPersistentDevfile();
+    devfileDaoDao.create(devfile);
+
+    assertEquals(devfileDaoDao.getById(devfile.getId()), new PersistentDevfileImpl(devfile));
+  }
+
+  private static PersistentDevfileImpl createPersistentDevfile( ) {
+    return createPersistentDevfile(NameGenerator.generate("name",6));
+  }
+
+  private static PersistentDevfileImpl createPersistentDevfile( String name) {
+    return  createPersistentDevfile(NameGenerator.generate("id",6), name);
   }
 
   private static PersistentDevfileImpl createPersistentDevfile(String id, String name) {
