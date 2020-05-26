@@ -14,7 +14,7 @@
 -- add userdevfile table
 CREATE TABLE userdevfile (
     id          VARCHAR(255)    NOT NULL UNIQUE,
-    devfile_id  VARCHAR(255)    NOT NULL UNIQUE,
+    devfile_id  BIGINT          NOT NULL UNIQUE,
     PRIMARY KEY (id)
 );
 CREATE INDEX index_userdevfile_devfile_id ON userdevfile (devfile_id);
