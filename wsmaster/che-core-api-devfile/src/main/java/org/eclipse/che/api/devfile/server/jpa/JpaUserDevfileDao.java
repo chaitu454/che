@@ -15,6 +15,7 @@ import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 import static org.eclipse.che.api.core.Pages.iterate;
 
+import com.google.common.annotations.Beta;
 import com.google.inject.persist.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,6 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
+@Beta
 public class JpaUserDevfileDao implements UserDevfileDao {
   private static final Logger LOG = LoggerFactory.getLogger(JpaUserDevfileDao.class);
 

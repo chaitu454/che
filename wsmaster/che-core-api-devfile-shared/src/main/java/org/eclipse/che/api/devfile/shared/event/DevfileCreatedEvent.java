@@ -11,11 +11,13 @@
  */
 package org.eclipse.che.api.devfile.shared.event;
 
+import com.google.common.annotations.Beta;
 import org.eclipse.che.api.core.model.workspace.devfile.UserDevfile;
 import org.eclipse.che.api.core.notification.EventOrigin;
 
 /** Informs about persisted devfile creation. */
 @EventOrigin("devfile")
+@Beta
 public class DevfileCreatedEvent {
   private final UserDevfile userDevfile;
 

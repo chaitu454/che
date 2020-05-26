@@ -11,7 +11,10 @@
  */
 package org.eclipse.che.api.devfile.shared;
 
+import com.google.common.annotations.Beta;
+
 /** Constants for Devfile API */
+@Beta
 public final class Constants {
   public static final String LINK_REL_SELF = "self";
 

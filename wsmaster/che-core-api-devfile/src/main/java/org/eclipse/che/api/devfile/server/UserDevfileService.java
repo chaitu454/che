@@ -13,12 +13,15 @@ package org.eclipse.che.api.devfile.server;
 
 import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static org.eclipse.che.api.devfile.server.DtoConverter.asDto;
 
+import com.google.common.annotations.Beta;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -41,12 +44,14 @@ import org.eclipse.che.api.core.rest.Service;
 import org.eclipse.che.api.devfile.shared.dto.UserDevfileDto;
 import org.eclipse.che.api.workspace.shared.dto.WorkspaceConfigDto;
 import org.eclipse.che.api.workspace.shared.dto.WorkspaceDto;
-import org.eclipse.che.api.workspace.shared.dto.devfile.DevfileDto;
 
 /** Defines Persistent Devfile REST API. */
 @Api(value = "/userdevfile", description = "Persistent Devfile REST API")
 @Path("/userdevfile")
+@Beta
 public class UserDevfileService extends Service {
+  @Inject UserDevfileManager userDevfileManager;
+  @Inject UserDevfileServiceLinksInjector linksInjector;
 
   @POST
   @Consumes({APPLICATION_JSON, "text/yaml", "text/x-yaml"})
@@ -70,12 +75,16 @@ public class UserDevfileService extends Service {
   })
   public Response create(
       @ApiParam(value = "The devfile of the workspace to create", required = true)
-          DevfileDto devfile,
+          UserDevfileDto devfile,
       @HeaderParam(CONTENT_TYPE) MediaType contentType)
       throws ConflictException, BadRequestException, ForbiddenException, NotFoundException,
           ServerException {
-
-    return Response.status(201).build();
+    requiredNotNull(devfile, "Devfile");
+    return Response.status(201)
+        .entity(
+            linksInjector.injectLinks(
+                asDto(userDevfileManager.createDevfile(devfile)), getServiceContext()))
+        .build();
   }
 
   @GET
@@ -152,4 +161,17 @@ public class UserDevfileService extends Service {
   public void delete(@ApiParam("The devfile id") @PathParam("id") String id)
       throws BadRequestException, ServerException, NotFoundException, ConflictException,
           ForbiddenException {}
+
+  /**
+   * Checks object reference is not {@code null}
+   *
+   * @param object object reference to check
+   * @param subject used as subject of exception message "{subject} required"
+   * @throws BadRequestException when object reference is {@code null}
+   */
+  private void requiredNotNull(Object object, String subject) throws BadRequestException {
+    if (object == null) {
+      throw new BadRequestException(subject + " required");
+    }
+  }
 }

@@ -11,6 +11,7 @@
  */
 package org.eclipse.che.api.devfile.server.spi;
 
+import com.google.common.annotations.Beta;
 import org.eclipse.che.api.core.ConflictException;
 import org.eclipse.che.api.core.NotFoundException;
 import org.eclipse.che.api.core.Page;
@@ -18,6 +19,7 @@ import org.eclipse.che.api.core.ServerException;
 import org.eclipse.che.api.devfile.server.model.impl.UserDevfileImpl;
 
 /** Defines data access object contract for {@code UserDevfileImpl}. */
+@Beta
 public interface UserDevfileDao {
 
   /**

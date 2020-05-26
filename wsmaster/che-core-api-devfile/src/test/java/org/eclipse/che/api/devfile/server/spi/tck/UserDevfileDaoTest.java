@@ -186,19 +186,19 @@ public class UserDevfileDaoTest {
     userDevfileDaoDao.remove("non-existing");
   }
 
-  private static UserDevfileImpl createUserDevfile() {
+  public static UserDevfileImpl createUserDevfile() {
     return createUserDevfile(NameGenerator.generate("name", 6));
   }
 
-  private static UserDevfileImpl createUserDevfile(String name) {
+  public static UserDevfileImpl createUserDevfile(String name) {
     return createUserDevfile(NameGenerator.generate("id", 6), name);
   }
 
-  private static UserDevfileImpl createUserDevfile(String id, String name) {
+  public static UserDevfileImpl createUserDevfile(String id, String name) {
     return new UserDevfileImpl(id, createDevfile(name));
   }
 
-  private static DevfileImpl createDevfile(String name) {
+  public static DevfileImpl createDevfile(String name) {
 
     SourceImpl source1 =
         new SourceImpl(

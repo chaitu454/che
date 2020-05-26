@@ -11,6 +11,7 @@
  */
 package org.eclipse.che.api.devfile.server.model.impl;
 
+import com.google.common.annotations.Beta;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -39,6 +40,7 @@ import org.eclipse.che.api.workspace.server.model.impl.devfile.ProjectImpl;
   @NamedQuery(name = "UserDevfile.getAll", query = "SELECT d FROM UserDevfile d"),
   @NamedQuery(name = "UserDevfile.getAllCount", query = "SELECT COUNT(d) FROM UserDevfile d"),
 })
+@Beta
 public class UserDevfileImpl implements UserDevfile {
 
   @Id
