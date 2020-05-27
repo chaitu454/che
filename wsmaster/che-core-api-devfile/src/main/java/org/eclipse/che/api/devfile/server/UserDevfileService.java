@@ -94,13 +94,14 @@ public class UserDevfileService extends Service {
   @ApiResponses({
     @ApiResponse(code = 200, message = "The response contains requested workspace entity"),
     @ApiResponse(code = 404, message = "The workspace with specified id does not exist"),
-    @ApiResponse(code = 403, message = "The user is not workspace owner"),
+    @ApiResponse(code = 403, message = "The user is not allowed to read devfile"),
     @ApiResponse(code = 500, message = "Internal server error occurred")
   })
   public UserDevfileDto getById(
-      @ApiParam(value = "PersistentDevfil identifier") @PathParam("id") String id)
+      @ApiParam(value = "UserDevfile identifier") @PathParam("id") String id)
       throws NotFoundException, ServerException, ForbiddenException, BadRequestException {
-    return null;
+    requiredNotNull(id, "id");
+    return linksInjector.injectLinks(asDto(userDevfileManager.getById(id)), getServiceContext());
   }
 
   @GET

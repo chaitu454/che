@@ -14,13 +14,17 @@ package org.eclipse.che.api.devfile.server;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static org.eclipse.che.api.devfile.server.TestObjectGenerator.createUserDevfile;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 
 import org.eclipse.che.api.core.ConflictException;
+import org.eclipse.che.api.core.NotFoundException;
 import org.eclipse.che.api.core.ServerException;
+import org.eclipse.che.api.core.model.workspace.devfile.UserDevfile;
 import org.eclipse.che.api.core.notification.EventService;
 import org.eclipse.che.api.devfile.server.model.impl.UserDevfileImpl;
 import org.eclipse.che.api.devfile.server.spi.UserDevfileDao;
@@ -70,5 +74,30 @@ public class UserDevfileManagerTest {
     // then
     verify(eventService).publish(devfileCreatedEventCaptor.capture());
     assertEquals(expected, devfileCreatedEventCaptor.getValue().getUserDevfile());
+  }
+
+  @Test(expectedExceptions = NullPointerException.class)
+  public void shouldThrowNpeWhenGettingUserDevfileByNullId() throws Exception {
+    userDevfileManager.getById(null);
+  }
+
+  @Test
+  public void shouldGetUserDevfileById() throws Exception {
+    // given
+    final UserDevfileImpl toFetch = new UserDevfileImpl(null, createUserDevfile());
+    when(userDevfileDao.getById(eq("id123"))).thenReturn(toFetch);
+    // when
+    final UserDevfile fetched = userDevfileManager.getById("id123");
+    // then
+    assertEquals(fetched, toFetch);
+    verify(userDevfileDao).getById("id123");
+  }
+
+  @Test(expectedExceptions = NotFoundException.class)
+  public void shouldRethrowNotFoundExceptionOnGetUserDevfileById() throws Exception {
+    // given
+    doThrow(NotFoundException.class).when(userDevfileDao).getById(eq("id123"));
+    // when
+    userDevfileManager.getById("id123");
   }
 }

@@ -20,6 +20,7 @@ import org.eclipse.che.api.core.ConflictException;
 import org.eclipse.che.api.core.NotFoundException;
 import org.eclipse.che.api.core.ServerException;
 import org.eclipse.che.api.core.model.workspace.devfile.Devfile;
+import org.eclipse.che.api.core.model.workspace.devfile.UserDevfile;
 import org.eclipse.che.api.core.notification.EventService;
 import org.eclipse.che.api.devfile.server.model.impl.UserDevfileImpl;
 import org.eclipse.che.api.devfile.server.spi.UserDevfileDao;
@@ -58,5 +59,19 @@ public class UserDevfileManager {
         EnvironmentContext.getCurrent().getSubject().getUserName());
     eventService.publish(new DevfileCreatedEvent(userDevfile));
     return userDevfile;
+  }
+
+  /**
+   * Gets UserDevfile by given id.
+   *
+   * @param id userdevfile identifier
+   * @return userdevfile instance
+   * @throws NullPointerException when {@code id} is null
+   * @throws NotFoundException when userdevfile with given id not found
+   * @throws ServerException when any server errors occurs
+   */
+  public UserDevfile getById(String id) throws NotFoundException, ServerException {
+    requireNonNull(id);
+    return userDevfileDao.getById(id);
   }
 }

@@ -16,6 +16,7 @@ import static org.everrest.assured.JettyHttpServer.ADMIN_USER_NAME;
 import static org.everrest.assured.JettyHttpServer.ADMIN_USER_PASSWORD;
 import static org.everrest.assured.JettyHttpServer.SECURE_PATH;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
@@ -93,6 +94,26 @@ public class UserDevfileServiceTest {
     assertEquals(response.getStatusCode(), 201);
     assertEquals(new UserDevfileImpl(unwrapDto(response, UserDevfileDto.class)), userDevfileImpl);
     verify(userDevfileManager).createDevfile(any(Devfile.class));
+  }
+
+  @Test
+  public void shouldGetUserDevfileById() throws Exception {
+    final UserDevfileImpl userDevfile = TestObjectGenerator.createUserDevfile();
+    when(userDevfileManager.getById(eq("id-22323"))).thenReturn(userDevfile);
+
+    final Response response =
+        given()
+            .auth()
+            .basic(ADMIN_USER_NAME, ADMIN_USER_PASSWORD)
+            .contentType("application/json")
+            .when()
+            .expect()
+            .statusCode(200)
+            .get(SECURE_PATH + "/userdevfile/id-22323");
+
+    assertEquals(new UserDevfileImpl(unwrapDto(response, UserDevfileDto.class)), userDevfile);
+    verify(userDevfileManager).getById(eq("id-22323"));
+    verify(linksInjector).injectLinks(any(), any());
   }
 
   private static <T> T unwrapDto(Response response, Class<T> dtoClass) {
