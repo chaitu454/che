@@ -15,6 +15,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 
 import org.eclipse.che.api.core.ConflictException;
@@ -23,6 +24,7 @@ import org.eclipse.che.api.core.notification.EventService;
 import org.eclipse.che.api.devfile.server.model.impl.UserDevfileImpl;
 import org.eclipse.che.api.devfile.server.spi.UserDevfileDao;
 import org.eclipse.che.api.devfile.server.spi.tck.UserDevfileDaoTest;
+import org.eclipse.che.api.devfile.shared.event.DevfileCreatedEvent;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
@@ -39,6 +41,7 @@ public class UserDevfileManagerTest {
   @InjectMocks UserDevfileManager userDevfileManager;
 
   @Captor private ArgumentCaptor<UserDevfileImpl> userDevfileArgumentCaptor;
+  @Captor private ArgumentCaptor<DevfileCreatedEvent> devfileCreatedEventCaptor;
 
   @BeforeMethod
   public void setup() throws ServerException, ConflictException {
@@ -48,10 +51,26 @@ public class UserDevfileManagerTest {
 
   @Test
   public void shouldGenerateUserDevfileIdOnCreation() throws Exception {
-    final UserDevfileImpl factory = UserDevfileDaoTest.createUserDevfile();
-
-    userDevfileManager.createDevfile(factory);
+    // given
+    final UserDevfileImpl userDevfile =
+        new UserDevfileImpl(null, UserDevfileDaoTest.createUserDevfile());
+    // when
+    UserDevfileImpl actual = userDevfileManager.createDevfile(userDevfile);
+    // then
     verify(userDevfileDao).create(userDevfileArgumentCaptor.capture());
     assertFalse(isNullOrEmpty(userDevfileArgumentCaptor.getValue().getId()));
+    assertEquals(new UserDevfileImpl(null, actual), userDevfile);
+  }
+
+  @Test
+  public void shouldSendDevfileCreatedEventOnCreation() throws Exception {
+    // given
+    final UserDevfileImpl userDevfile =
+        new UserDevfileImpl(null, UserDevfileDaoTest.createUserDevfile());
+    // when
+    UserDevfileImpl expected = userDevfileManager.createDevfile(userDevfile);
+    // then
+    verify(eventService).publish(devfileCreatedEventCaptor.capture());
+    assertEquals(expected, devfileCreatedEventCaptor.getValue().getUserDevfile());
   }
 }

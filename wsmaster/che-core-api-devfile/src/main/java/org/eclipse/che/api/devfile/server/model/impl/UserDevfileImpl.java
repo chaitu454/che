@@ -133,8 +133,8 @@ public class UserDevfileImpl implements UserDevfile {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    UserDevfileImpl devfile1 = (UserDevfileImpl) o;
-    return id.equals(devfile1.id) && devfile.equals(devfile1.devfile);
+    UserDevfileImpl that = (UserDevfileImpl) o;
+    return Objects.equals(id, that.id) && Objects.equals(devfile, that.devfile);
   }
 
   @Override
