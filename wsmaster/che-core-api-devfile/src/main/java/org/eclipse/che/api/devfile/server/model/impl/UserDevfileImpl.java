@@ -58,8 +58,12 @@ public class UserDevfileImpl implements UserDevfile {
     this.id = id;
   }
 
-  public UserDevfileImpl(UserDevfileImpl devfile) {
-    this(devfile.id, devfile.devfile);
+  public UserDevfileImpl(UserDevfileImpl userDevfile) {
+    this(userDevfile.id, userDevfile.devfile);
+  }
+
+  public UserDevfileImpl(UserDevfile userDevfile) {
+    this(userDevfile.getId(), new DevfileImpl(userDevfile));
   }
 
   @Override

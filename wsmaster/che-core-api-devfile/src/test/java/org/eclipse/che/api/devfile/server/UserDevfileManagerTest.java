@@ -12,6 +12,7 @@
 package org.eclipse.che.api.devfile.server;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static org.eclipse.che.api.devfile.server.TestObjectGenerator.createUserDevfile;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -23,7 +24,6 @@ import org.eclipse.che.api.core.ServerException;
 import org.eclipse.che.api.core.notification.EventService;
 import org.eclipse.che.api.devfile.server.model.impl.UserDevfileImpl;
 import org.eclipse.che.api.devfile.server.spi.UserDevfileDao;
-import org.eclipse.che.api.devfile.server.spi.tck.UserDevfileDaoTest;
 import org.eclipse.che.api.devfile.shared.event.DevfileCreatedEvent;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -52,8 +52,7 @@ public class UserDevfileManagerTest {
   @Test
   public void shouldGenerateUserDevfileIdOnCreation() throws Exception {
     // given
-    final UserDevfileImpl userDevfile =
-        new UserDevfileImpl(null, UserDevfileDaoTest.createUserDevfile());
+    final UserDevfileImpl userDevfile = new UserDevfileImpl(null, createUserDevfile());
     // when
     UserDevfileImpl actual = userDevfileManager.createDevfile(userDevfile);
     // then
@@ -65,8 +64,7 @@ public class UserDevfileManagerTest {
   @Test
   public void shouldSendDevfileCreatedEventOnCreation() throws Exception {
     // given
-    final UserDevfileImpl userDevfile =
-        new UserDevfileImpl(null, UserDevfileDaoTest.createUserDevfile());
+    final UserDevfileImpl userDevfile = new UserDevfileImpl(null, createUserDevfile());
     // when
     UserDevfileImpl expected = userDevfileManager.createDevfile(userDevfile);
     // then

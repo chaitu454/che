@@ -15,6 +15,7 @@ import com.google.common.annotations.Beta;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.che.api.core.model.workspace.devfile.UserDevfile;
+import org.eclipse.che.api.core.rest.shared.dto.Hyperlinks;
 import org.eclipse.che.api.core.rest.shared.dto.Link;
 import org.eclipse.che.api.workspace.shared.dto.devfile.ComponentDto;
 import org.eclipse.che.api.workspace.shared.dto.devfile.DevfileCommandDto;
@@ -24,7 +25,7 @@ import org.eclipse.che.dto.shared.DTO;
 
 @DTO
 @Beta
-public interface UserDevfileDto extends UserDevfile {
+public interface UserDevfileDto extends UserDevfile, Hyperlinks {
 
   void setId(String id);
 
@@ -72,9 +73,6 @@ public interface UserDevfileDto extends UserDevfile {
 
   UserDevfileDto withMetadata(MetadataDto metadata);
 
-  List<Link> getLinks();
-
-  void setLinks(List<Link> links);
-
+  @Override
   UserDevfileDto withLinks(List<Link> links);
 }

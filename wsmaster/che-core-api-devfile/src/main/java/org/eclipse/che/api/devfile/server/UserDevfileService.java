@@ -42,8 +42,8 @@ import org.eclipse.che.api.core.NotFoundException;
 import org.eclipse.che.api.core.ServerException;
 import org.eclipse.che.api.core.rest.Service;
 import org.eclipse.che.api.devfile.shared.dto.UserDevfileDto;
-import org.eclipse.che.api.workspace.shared.dto.WorkspaceConfigDto;
 import org.eclipse.che.api.workspace.shared.dto.WorkspaceDto;
+import org.eclipse.che.api.workspace.shared.dto.devfile.DevfileDto;
 
 /** Defines Persistent Devfile REST API. */
 @Api(value = "/userdevfile", description = "Persistent Devfile REST API")
@@ -60,8 +60,8 @@ public class UserDevfileService extends Service {
       value = "Creates a new persistent Devfile",
       consumes = "application/json, text/yaml, text/x-yaml",
       produces = APPLICATION_JSON,
-      nickname = "createFromDevfile",
-      response = WorkspaceConfigDto.class)
+      nickname = "create",
+      response = UserDevfileDto.class)
   @ApiResponses({
     @ApiResponse(code = 201, message = "The devfile successfully created"),
     @ApiResponse(code = 400, message = "Missed required parameters, parameters are not valid"),
@@ -75,7 +75,7 @@ public class UserDevfileService extends Service {
   })
   public Response create(
       @ApiParam(value = "The devfile of the workspace to create", required = true)
-          UserDevfileDto devfile,
+          DevfileDto devfile,
       @HeaderParam(CONTENT_TYPE) MediaType contentType)
       throws ConflictException, BadRequestException, ForbiddenException, NotFoundException,
           ServerException {

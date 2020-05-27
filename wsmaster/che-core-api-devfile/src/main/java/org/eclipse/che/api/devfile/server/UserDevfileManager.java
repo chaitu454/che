@@ -15,11 +15,11 @@ import static java.util.Objects.requireNonNull;
 
 import com.google.common.annotations.Beta;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.eclipse.che.api.core.ConflictException;
 import org.eclipse.che.api.core.NotFoundException;
 import org.eclipse.che.api.core.ServerException;
 import org.eclipse.che.api.core.model.workspace.devfile.Devfile;
-import org.eclipse.che.api.core.model.workspace.devfile.UserDevfile;
 import org.eclipse.che.api.core.notification.EventService;
 import org.eclipse.che.api.devfile.server.model.impl.UserDevfileImpl;
 import org.eclipse.che.api.devfile.server.spi.UserDevfileDao;
@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Beta
+@Singleton
 public class UserDevfileManager {
   private static final Logger LOG = LoggerFactory.getLogger(UserDevfileManager.class);
   @Inject UserDevfileDao userDevfileDao;
@@ -44,7 +45,7 @@ public class UserDevfileManager {
    *     for {@code owner})
    * @throws ServerException when any other error occurs
    */
-  public UserDevfileImpl createDevfile(UserDevfile devfile)
+  public UserDevfileImpl createDevfile(Devfile devfile)
       throws ServerException, NotFoundException, ConflictException {
     requireNonNull(devfile, "Required non-null devfile");
     UserDevfileImpl userDevfile =

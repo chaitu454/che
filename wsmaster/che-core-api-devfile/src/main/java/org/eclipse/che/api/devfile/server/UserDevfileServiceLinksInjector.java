@@ -16,6 +16,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import com.google.common.annotations.Beta;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Singleton;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.UriBuilder;
 import org.eclipse.che.api.core.rest.ServiceContext;
@@ -26,6 +27,7 @@ import org.eclipse.che.api.devfile.shared.dto.UserDevfileDto;
 
 /** Helps to inject {@link UserDevfileService} related links. */
 @Beta
+@Singleton
 public class UserDevfileServiceLinksInjector {
   public UserDevfileDto injectLinks(UserDevfileDto userDevfileDto, ServiceContext serviceContext) {
     final UriBuilder uriBuilder = serviceContext.getBaseUriBuilder();
