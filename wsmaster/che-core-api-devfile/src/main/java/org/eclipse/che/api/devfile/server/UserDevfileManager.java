@@ -11,11 +11,7 @@
  */
 package org.eclipse.che.api.devfile.server;
 
-import static java.util.Objects.requireNonNull;
-
 import com.google.common.annotations.Beta;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import org.eclipse.che.api.core.ConflictException;
 import org.eclipse.che.api.core.NotFoundException;
 import org.eclipse.che.api.core.ServerException;
@@ -29,6 +25,11 @@ import org.eclipse.che.commons.env.EnvironmentContext;
 import org.eclipse.che.commons.lang.NameGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import static java.util.Objects.requireNonNull;
 
 @Beta
 @Singleton
@@ -73,5 +74,24 @@ public class UserDevfileManager {
   public UserDevfile getById(String id) throws NotFoundException, ServerException {
     requireNonNull(id);
     return userDevfileDao.getById(id);
+  }
+
+  /**
+   * Updates an existing user devfile in accordance to the new configuration.
+   *
+   * <p>Note: Replace strategy is used for user devfile update, it means that existing devfile data
+   * will be replaced with given {@code update}.
+   *
+   * @param update user devfile update
+   * @return updated user devfile
+   * @throws NullPointerException when {@code update} is null
+   * @throws ConflictException when any conflict occurs.
+   * @throws NotFoundException when user devfile with given id not found
+   * @throws ServerException when any server error occurs
+   */
+  public UserDevfileImpl updateUserDevfile(UserDevfile update)
+      throws ConflictException, NotFoundException, ServerException {
+    requireNonNull(update);
+    return userDevfileDao.update(new UserDevfileImpl(update));
   }
 }

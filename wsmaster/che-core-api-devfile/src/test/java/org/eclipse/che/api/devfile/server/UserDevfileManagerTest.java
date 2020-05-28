@@ -11,19 +11,7 @@
  */
 package org.eclipse.che.api.devfile.server;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
-import static org.eclipse.che.api.devfile.server.TestObjectGenerator.createUserDevfile;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-
-import org.eclipse.che.api.core.ConflictException;
 import org.eclipse.che.api.core.NotFoundException;
-import org.eclipse.che.api.core.ServerException;
 import org.eclipse.che.api.core.model.workspace.devfile.UserDevfile;
 import org.eclipse.che.api.core.notification.EventService;
 import org.eclipse.che.api.devfile.server.model.impl.UserDevfileImpl;
@@ -34,9 +22,18 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.testng.MockitoTestNGListener;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+
+import static com.google.common.base.Strings.isNullOrEmpty;
+import static org.eclipse.che.api.devfile.server.TestObjectGenerator.createUserDevfile;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 
 @Listeners(value = MockitoTestNGListener.class)
 public class UserDevfileManagerTest {
@@ -47,16 +44,12 @@ public class UserDevfileManagerTest {
   @Captor private ArgumentCaptor<UserDevfileImpl> userDevfileArgumentCaptor;
   @Captor private ArgumentCaptor<DevfileCreatedEvent> devfileCreatedEventCaptor;
 
-  @BeforeMethod
-  public void setup() throws ServerException, ConflictException {
-    when(userDevfileDao.create(any(UserDevfileImpl.class)))
-        .thenAnswer(invocationOnMock -> invocationOnMock.getArguments()[0]);
-  }
-
   @Test
   public void shouldGenerateUserDevfileIdOnCreation() throws Exception {
     // given
     final UserDevfileImpl userDevfile = new UserDevfileImpl(null, createUserDevfile());
+    when(userDevfileDao.create(any(UserDevfileImpl.class)))
+        .thenAnswer(invocationOnMock -> invocationOnMock.getArguments()[0]);
     // when
     UserDevfileImpl actual = userDevfileManager.createDevfile(userDevfile);
     // then
@@ -69,6 +62,8 @@ public class UserDevfileManagerTest {
   public void shouldSendDevfileCreatedEventOnCreation() throws Exception {
     // given
     final UserDevfileImpl userDevfile = new UserDevfileImpl(null, createUserDevfile());
+    when(userDevfileDao.create(any(UserDevfileImpl.class)))
+        .thenAnswer(invocationOnMock -> invocationOnMock.getArguments()[0]);
     // when
     UserDevfileImpl expected = userDevfileManager.createDevfile(userDevfile);
     // then
@@ -86,6 +81,7 @@ public class UserDevfileManagerTest {
     // given
     final UserDevfileImpl toFetch = new UserDevfileImpl(null, createUserDevfile());
     when(userDevfileDao.getById(eq("id123"))).thenReturn(toFetch);
+
     // when
     final UserDevfile fetched = userDevfileManager.getById("id123");
     // then
@@ -99,5 +95,31 @@ public class UserDevfileManagerTest {
     doThrow(NotFoundException.class).when(userDevfileDao).getById(eq("id123"));
     // when
     userDevfileManager.getById("id123");
+  }
+
+  @Test(expectedExceptions = NullPointerException.class)
+  public void shouldThrowNpeWhenUpdatingUserDevfileByNullId() throws Exception {
+    userDevfileManager.updateUserDevfile(null);
+  }
+
+  @Test
+  public void shouldUpdateUserDevfile() throws Exception {
+    // given
+    final UserDevfileImpl userDevfile = new UserDevfileImpl("idfosdo", createUserDevfile());
+    when(userDevfileDao.update(any(UserDevfileImpl.class)))
+        .thenAnswer(invocationOnMock -> invocationOnMock.getArguments()[0]);
+    // when
+    userDevfileManager.updateUserDevfile(userDevfile);
+    // then
+    verify(userDevfileDao).update(eq(userDevfile));
+  }
+
+  @Test(expectedExceptions = NotFoundException.class)
+  public void shouldThrowNotFoundIfUserDevfileIsNotFoundOnUpdate() throws Exception {
+    // given
+    final UserDevfileImpl userDevfile = new UserDevfileImpl("idfosdo", createUserDevfile());
+    doThrow(NotFoundException.class).when(userDevfileDao).update(any(UserDevfileImpl.class));
+    // when
+    userDevfileManager.updateUserDevfile(userDevfile);
   }
 }

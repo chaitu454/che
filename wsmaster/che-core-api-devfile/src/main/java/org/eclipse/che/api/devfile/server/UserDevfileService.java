@@ -11,16 +11,21 @@
  */
 package org.eclipse.che.api.devfile.server;
 
-import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static org.eclipse.che.api.devfile.server.DtoConverter.asDto;
-
 import com.google.common.annotations.Beta;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.eclipse.che.api.core.BadRequestException;
+import org.eclipse.che.api.core.ConflictException;
+import org.eclipse.che.api.core.ForbiddenException;
+import org.eclipse.che.api.core.NotFoundException;
+import org.eclipse.che.api.core.ServerException;
+import org.eclipse.che.api.core.rest.Service;
+import org.eclipse.che.api.devfile.shared.dto.UserDevfileDto;
+import org.eclipse.che.api.workspace.shared.dto.devfile.DevfileDto;
+
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -35,15 +40,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.eclipse.che.api.core.BadRequestException;
-import org.eclipse.che.api.core.ConflictException;
-import org.eclipse.che.api.core.ForbiddenException;
-import org.eclipse.che.api.core.NotFoundException;
-import org.eclipse.che.api.core.ServerException;
-import org.eclipse.che.api.core.rest.Service;
-import org.eclipse.che.api.devfile.shared.dto.UserDevfileDto;
-import org.eclipse.che.api.workspace.shared.dto.WorkspaceDto;
-import org.eclipse.che.api.workspace.shared.dto.devfile.DevfileDto;
+
+import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static org.eclipse.che.api.devfile.server.DtoConverter.asDto;
 
 /** Defines Persistent Devfile REST API. */
 @Api(value = "/userdevfile", description = "Persistent Devfile REST API")
@@ -142,12 +142,15 @@ public class UserDevfileService extends Service {
                 + "(e.g. Workspace with such name already exists)"),
     @ApiResponse(code = 500, message = "Internal server error occurred")
   })
-  public WorkspaceDto update(
+  public UserDevfileDto update(
       @ApiParam("The devfile id") @PathParam("id") String id,
       @ApiParam(value = "The devfile update", required = true) UserDevfileDto update)
       throws BadRequestException, ServerException, ForbiddenException, NotFoundException,
           ConflictException {
-    return null;
+    requiredNotNull(update, "User Devfile configuration");
+    update.setId(id);
+    return linksInjector.injectLinks(
+        asDto(userDevfileManager.updateUserDevfile(update)), getServiceContext());
   }
 
   @DELETE
